@@ -2,7 +2,7 @@ from django import forms
 from rango.models import Page, Category
 from django import forms
 from django.contrib.auth.models import User
-from rango.models import Category, Page, UserProfile
+from rango.models import Category, Page, UserProfile,SignUpForEmail
 
 class CategoryForm(forms.ModelForm):
     my_default_errors = {
@@ -60,3 +60,14 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ('website', 'picture')
+
+class EmailForm(forms.ModelForm):
+    my_default_errors = {
+        'required': 'Sorry that is incorrect',
+        'invalid': 'Please Enter a New Email Address'
+    }
+    email = forms.CharField(max_length=128, help_text="Please Enter A New Email Address", error_messages=my_default_errors)
+
+    class Meta:
+        model = SignUpForEmail
+        fields=('email',)

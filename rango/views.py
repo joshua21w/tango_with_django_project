@@ -1,12 +1,13 @@
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render
 from rango.models import Page
+from rango.models import HomePage
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from rango.models import Category
 from rango.forms import CategoryForm
 from rango.forms import PageForm
-from rango.forms import UserForm, UserProfileForm
+from rango.forms import UserForm, UserProfileForm, EmailForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from datetime import datetime
@@ -30,6 +31,9 @@ def index(request):
 
     context_dict = {'categories': category_list, 'pages': page_list}
 
+    test = HomePage.objects.get(Heading="text")
+    context_dict['subheading'] = test.subheading
+    context_dict['text'] = test.text
     visits = request.session.get('visits')
     if not visits:
         visits = 1
@@ -249,3 +253,42 @@ def user_login(request):
         # blank dictionary object...
         return render(request, 'rango/login.html', {})
 
+def signup(request):
+
+    # A boolean value for telling the template whether the registration was successful.
+    # Set to False initially. Code changes value to True when registration succeeds.
+    registered = False
+
+    # If it's a HTTP POST, we're interested in processing form data.
+    if request.method == 'POST':
+        # Attempt to grab information from the raw form information.
+        # Note that we make use of both UserForm and UserProfileForm.
+        email_form = EmailForm(data=request.POST)
+
+
+        # If the two forms are valid...
+        if email_form.is_valid() and email_form.is_valid():
+            # Save the user's form data to the database.
+            user = email_form.save()
+            user.save()
+
+
+            # Update our variable to tell the template registration was successful.
+            registered = True
+
+        # Invalid form or forms - mistakes or something else?
+        # Print problems to the terminal.
+        # They'll also be shown to the user.
+        else:
+            print email_form.errors
+
+    # Not a HTTP POST, so we render our form using two ModelForm instances.
+    # These forms will be blank, ready for user input.
+    else:
+        email_form = EmailForm()
+
+
+    # Render the template depending on the context.
+    return render(request,
+            'rango/register.html',
+            {'user_form': email_form, 'registered': registered} )

@@ -22,6 +22,8 @@ urlpatterns = patterns('',
 
 url(r'^accounts/password/reset$', 'django.contrib.auth.views.password_reset_done',
    name='password_reset_done'),
+
+url(r'^$', 'rango.views.index', name="index"),
 )
 
 if settings.DEBUG:

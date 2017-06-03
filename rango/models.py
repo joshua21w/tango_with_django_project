@@ -2,7 +2,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 # Create your models here.
-
+import time
 
 class Category(models.Model):
     name = models.CharField(max_length=128, unique=True)
@@ -43,3 +43,29 @@ class UserProfile(models.Model):
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.user.username
+
+
+class HomePage(models.Model):
+    Heading = models.CharField(max_length=128, unique=True)
+    subheading = models.CharField(max_length=128)
+    text = models.CharField(max_length=250)
+
+    def __unicode__(self):      #For Python 2, use __str__ on Python 3
+        return self.subheading
+
+class SignUpForEmail(models.Model):
+        email = models.CharField(max_length=128, unique=True)
+        empty = models.CharField(max_length=128)
+        created = models.DateTimeField(auto_now_add=True)
+        day = models.CharField(max_length=128)
+
+        def save(self, *args, **kwargs):
+            # Uncomment if you don't want the slug to change every time the name changes
+            # if self.id is None:
+            # self.slug = slugify(self.name)
+            self.day =  time.asctime( time.localtime(time.time()) )
+
+            super(SignUpForEmail, self).save(*args, **kwargs)
+
+        def __unicode__(self):  # For Python 2, use __str__ on Python 3
+            return self.email
