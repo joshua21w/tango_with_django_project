@@ -31,7 +31,7 @@ def index(request):
 
     context_dict = {'categories': category_list, 'pages': page_list}
 
-    test = HomePage.objects.get(Heading="text")
+    test = HomePage.objects.get(Heading="TopHeading")
     context_dict['subheading'] = test.subheading
     context_dict['text'] = test.text
     visits = request.session.get('visits')
